@@ -18,6 +18,7 @@
     "bootstrap": "^3.3.7",
     "bootstrap-vue": "^0.16.1",
     "vue": "^2.2.6",
+    "vue-material": "^0.7.1",
     "vue-router": "^2.3.1",
     "vue-wamp": "^1.2.3"
   },

@@ -144,6 +144,19 @@
                       </md-menu-content>
                     </md-menu>
           
+                    <md-menu md-size="4" md-direction="bottom left">
+                      <md-button class="md-icon-button" md-menu-trigger>
+                        <md-icon>cloud</md-icon>
+                      </md-button>
+
+                      <md-menu-content>
+                        <md-input-container>
+                            <label for="wampURL">WAMP URL</label>
+                            <md-input class="md-flex" v-model="wampURL"></md-input>
+                        </md-input-container>
+                      </md-menu-content>
+                    </md-menu>
+
                   </md-card-header>
 
                   <md-card-content>
@@ -182,7 +195,8 @@ let serialDisplayNeedRefresh = false;
 
 Vue.use(VueWamp, {
   debug: true,
-  url: 'ws://127.0.0.1:55058/ws',
+  // url: 'ws://127.0.0.1:55058/ws',
+  url: this.wampURL,
   realm: 'realm1',
   onopen(session, details) {
     console.log('WAMP connected', session, details);
@@ -204,6 +218,7 @@ export default {
       serialPortList: ['CLICK REFRESH'],
       selectedSerialPort: '',
       serial_settings_checked: false,
+      wampURL: 'ws://127.0.0.1:55058/ws',
     };
   },
   mounted() {

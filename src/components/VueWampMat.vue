@@ -147,8 +147,8 @@
                   </md-card-header>
 
                   <md-card-content>
-                      <textarea rows="25" cols="50">{{ serialData }}</textarea>
-                       <textarea rows="25" cols="75"> {{ ensData }} </textarea>
+                      <textarea rows="25" cols="60">{{ serialData }}</textarea>
+                       <textarea rows="25" cols="65"> {{ ensData }} </textarea>
                   </md-card-content>
 
                   <md-card-actions>
@@ -178,6 +178,7 @@ import VueWamp from 'vue-wamp';
 
 let serialUpdateTimerObj;
 let serialDisplayBuffer = '';
+let serialDisplayNeedRefresh = false;
 
 Vue.use(VueWamp, {
   debug: true,
@@ -254,7 +255,10 @@ export default {
     },
     timerTick() {
       // Rate limit how often the display is updated
-      this.serialData = serialDisplayBuffer;
+      if (serialDisplayNeedRefresh) {
+        this.serialData = serialDisplayBuffer;
+        serialDisplayNeedRefresh = false;
+      }
     },
   },
   wamp: {
@@ -269,6 +273,8 @@ export default {
         } else {
           serialDisplayBuffer += data;
         }
+        // Set flag to refresh the display
+        serialDisplayNeedRefresh = true;
 
         // Check the serial settings
         this.checkSerialSettings(json);
@@ -314,3 +320,4 @@ a {
   color: #42b983;
 }
 </style>
+

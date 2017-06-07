@@ -14,12 +14,12 @@ export default new Router({
       component: Hello,
     },
     {
-      path: '/',
+      path: '/test',
       name: 'EchoWamp',
       component: EchoWamp,
     },
     {
-      path: '/mat',
+      path: '/',
       name: 'EchoWampMat',
       component: EchoWampMat,
     },

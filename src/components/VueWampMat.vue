@@ -188,6 +188,7 @@
 <script>
 import Vue from 'vue';
 import VueWamp from 'vue-wamp';
+import CONFIG from '../config.json';
 
 let serialUpdateTimerObj;
 let serialDisplayBuffer = '';
@@ -195,14 +196,14 @@ let serialDisplayNeedRefresh = false;
 
 Vue.use(VueWamp, {
   debug: true,
-  // url: 'ws://127.0.0.1:55058/ws',
-  url: this.wampURL,
+  url: CONFIG.wamp.url,
   realm: 'realm1',
   onopen(session, details) {
     console.log('WAMP connected', session, details);
   },
   onclose(reason, details) {
     console.log(`WAMP closed: ${reason} ${details}`);
+    console.log('vuex: ', this.$store.state.wampURL);
   },
 });
 
@@ -218,16 +219,49 @@ export default {
       serialPortList: ['CLICK REFRESH'],
       selectedSerialPort: '',
       serial_settings_checked: false,
-      wampURL: 'ws://127.0.0.1:55058/ws',
+      myIP: '127.0.0.1',
+      wampURL: CONFIG.wamp.url,
     };
   },
   mounted() {
     this.getSerialList();
-    console.log('mounted');
 
+    // Get the IP of the user
+    this.getIP(this.setIP);
+
+    // Start timer to refresh display
     this.startUpdateSerialTimer();
+
+    console.log('mounted');
   },
   methods: {
+    setIP(ip) {
+      this.myIP = ip;
+    },
+    getIP(callback) {
+      // compatibility for firefox and chrome
+      window.RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection ||
+      window.webkitRTCPeerConnection;
+      const pc = new RTCPeerConnection({ iceServers: [] });
+      const noop = function bar() { };
+
+      // create a bogus data channel
+      pc.createDataChannel('');
+
+      // create offer and set local description
+      pc.createOffer(pc.setLocalDescription.bind(pc), noop);
+
+      // listen for candidate events
+      pc.onicecandidate = function foo(ice) {
+        if (!ice || !ice.candidate || !ice.candidate.candidate) {
+          return;
+        }
+        const myIP = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(ice.candidate.candidate)[1];
+        console.log('my IP: ', myIP);
+        callback(myIP);
+        pc.onicecandidate = noop;
+      };
+    },
     sendBreak() {
       // this.$wampPublish('com.rti.onbreak', [100], {})
       this.$wampCall('com.rti.onbreak', [100]);

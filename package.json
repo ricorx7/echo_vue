@@ -20,7 +20,8 @@
     "vue": "^2.2.6",
     "vue-material": "^0.7.1",
     "vue-router": "^2.3.1",
-    "vue-wamp": "^1.2.3"
+    "vue-wamp": "^1.2.3",
+    "vuex": "^2.3.1"
   },
   "devDependencies": {
     "autoprefixer": "^6.7.2",

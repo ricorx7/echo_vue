@@ -10,13 +10,13 @@ import VueMaterial from 'vue-material';
 import BootstrapVue from 'bootstrap-vue/dist/bootstrap-vue.esm';
 import App from './App';
 import router from './router';
+import store from './store';
 
 Vue.config.productionTip = false;
 Vue.config.devtools = true;
 
 Vue.use(BootstrapVue);
 Vue.use(VueMaterial);
-
 
 Vue.material.registerTheme({
   default: {
@@ -35,6 +35,7 @@ Vue.material.registerTheme({
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  store,
   router,
   template: '<App/>',
   components: { App },
